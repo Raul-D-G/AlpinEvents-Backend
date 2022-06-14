@@ -10,7 +10,8 @@ const {
 const router = express.Router();
 
 router.post("/eveniment", addEveniment);
-router.get("/eveniment", getAllEvenimente);
+// router.get("/eveniment", getAllEvenimente);
+router.get("/evenimente/:uid", getAllEvenimente);
 router.get("/eveniment/:id", getEveniment);
 router.put("/eveniment/:id", updateEveniment);
 router.delete("/eveniment/:id", deleteEveniment);

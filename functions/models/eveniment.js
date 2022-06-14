@@ -1,14 +1,16 @@
 class Eveniment {
   constructor(
-      id,
-      nume,
-      organizator,
-      nrPersoane,
-      data,
-      idMeniu,
-      avans,
-      pret,
-      plata,
+    id,
+    nume,
+    organizator,
+    nrPersoane,
+    data,
+    idMeniu,
+    avans,
+    pret,
+    plata,
+    uid,
+    image
   ) {
     this.id = id;
     this.nume = nume;
@@ -19,6 +21,8 @@ class Eveniment {
     this.avans = avans;
     this.pret = pret;
     this.plata = plata;
+    this.uid = uid;
+    this.image = image;
   }
 }
 

@@ -6,8 +6,11 @@ const firestore = require("../db");
 const addEveniment = async (req, res, next) => {
   try {
     const data = req.body;
-    await firestore.collection("evenimente").doc().set(data);
-    res.send("Record saved successfuly");
+
+    const docRef = firestore.collection("evenimente").doc();
+    await docRef.set(data);
+
+    res.send(docRef.id);
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -18,24 +21,37 @@ const getAllEvenimente = async (req, res, next) => {
     const evenimente = await firestore.collection("evenimente");
     const data = await evenimente.get();
     const evenimenteArray = [];
+    const uid = req.params.uid;
     if (data.empty) {
-      res.status(404).send("Nu sunt evenimente");
+      res.status(404).send({
+        message: "Nu sunt evenimente",
+      });
     } else {
       data.forEach((doc) => {
-        const eveniment = new Eveniment(
+        if (uid === doc.data().uid) {
+          const eveniment = new Eveniment(
             doc.id,
             doc.data().nume,
             doc.data().organizator,
             doc.data().nrPersoane,
-            doc.data().data,
+            new Date(doc.data().data),
             doc.data().idMeniu,
             doc.data().avans,
             doc.data().pret,
             doc.data().plata,
-        );
-        evenimenteArray.push(eveniment);
+            doc.data().uid,
+            doc.data().image
+          );
+          evenimenteArray.push(eveniment);
+        }
       });
-      res.send(evenimenteArray);
+      if (evenimenteArray.length === 0) {
+        res.status(404).send({
+          message: "Nu sunt evenimente",
+        });
+      } else {
+        res.send(evenimenteArray);
+      }
     }
   } catch (error) {
     res.status(400).send(error.message);
@@ -48,9 +64,11 @@ const getEveniment = async (req, res, next) => {
     const eveniment = await firestore.collection("evenimente").doc(id);
     const data = await eveniment.get();
     if (!data.exists) {
-      res.status(404).send("Evenimentul cu id-ul specificat nu exista");
+      res.status(404).send({
+        message: "Evenimentul cu id-ul specificat nu exista",
+      });
     } else {
-      res.send(data.data());
+      (data.data().data = new Date(data.data().data)), res.send(data.data());
     }
   } catch (error) {
     res.status(400).send(error.message);
